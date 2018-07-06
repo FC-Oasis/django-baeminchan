@@ -8,12 +8,12 @@ class Product(models.Model):
     name = models.CharField(max_length=250, unique=True)
     category = models.ForeignKey(Category, related_name='products', null=True, on_delete=models.SET_NULL)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='product', blank=True)
+    thumbnail_url = models.URLField(blank=True)
     related_products = models.ManyToManyField('self', verbose_name='related products', blank=True, symmetrical=False)
 
     # 가격
     price = models.PositiveIntegerField(verbose_name='정가', default=0)
-    discount_price = models.PositiveIntegerField(verbose_name='할인금액', default=0)
+    discount_rate = models.PositiveIntegerField(verbose_name='할인율', default=0)
     sale_price = models.PositiveIntegerField(verbose_name='판매가격', default=0)
     point_amount = models.IntegerField(verbose_name='적립될 포인트', default=0)
 
@@ -25,23 +25,24 @@ class Product(models.Model):
     alert_allergy = models.TextField()
 
     # Stocks
-    DELIVERY_DAY_CHOICES = (
-        ('mon', '월요일'),
-        ('tue', '화요일'),
-        ('wed', '수요일'),
-        ('thu', '목요일'),
-        ('fri', '금요일'),
-        ('sat', '토요일'),
-        ('sun', '일요일'),
-
-    )
     stock = models.IntegerField(blank=True)
     available = models.BooleanField(default=True)
-    delivery_days = models.CharField(max_length=20, blank=True, null=True, choices=DELIVERY_DAY_CHOICES)
+    delivery_days = models.CharField(max_length=50, blank=True)
+    delivery_type = models.CharField(max_length=50, blank=True)
 
     class Meta:
         ordering = ('name',)
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return '{}'.format(f'[{self.suppiler}] {name} {weight}')
 
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
+    image_url = models.URLField(blank=True)
+
+    class Meta:
+        ordering = ('product',)
+
+    def __str__(self):
+        return '{}'.format(self.image_url)
