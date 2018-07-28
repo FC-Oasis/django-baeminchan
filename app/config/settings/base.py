@@ -31,8 +31,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 
 # Application definition
+AUTH_USER_MODEL = 'members.User'
 
 INSTALLED_APPS = [
+    'members',
+    'product',
+    'cart',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
