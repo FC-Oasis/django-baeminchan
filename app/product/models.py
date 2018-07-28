@@ -32,10 +32,10 @@ class Product(models.Model):
         ('mon', '월요일'),
         ('tue', '화요일'),
         ('wed', '수요일'),
-        ('wed', '목요일'),
-        ('wed', '금요일'),
-        ('wed', '토요일'),
-        ('wed', '일요일'),
+        ('thu', '목요일'),
+        ('fri', '금요일'),
+        ('sat', '토요일'),
+        ('sun', '일요일'),
 
     )
     stock = models.IntegerField(blank=True)
