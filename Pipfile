@@ -10,11 +10,15 @@ pillow = "*"
 django-storages = "*"
 "boto3" = "*"
 uwsgi = "*"
+requests = "*"
 
 [dev-packages]
 ipython = "*"
 django-extensions = "*"
 awsebcli = "*"
+"beautifulsoup4" = "*"
+lxml = "*"
+requests = "*"
 
 [requires]
 python_version = "3.6"
