@@ -10,8 +10,8 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, verbose_name='cart')
-    product = models.ForeignKey(Product, verbose_name='product')
+    cart = models.ForeignKey(Cart, verbose_name='cart', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, verbose_name='product', on_delete=models.CASCADE)
     amount = models.IntegerField(blank=True)
 
 
