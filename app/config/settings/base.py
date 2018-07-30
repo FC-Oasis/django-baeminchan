@@ -32,6 +32,10 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 
 # Application definition
 AUTH_USER_MODEL = 'members.User'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'members.backends.KakaoBackend',
+]
 
 INSTALLED_APPS = [
     'rest_framework',
