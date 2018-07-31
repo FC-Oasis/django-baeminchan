@@ -3,7 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    full_name = models.CharField(verbose_name='user_name', max_length=100)
+    fullname = models.CharField(verbose_name='user_name', max_length=100)
     address = models.ManyToManyField(
         'Address', related_name='user_addresses', blank=True,
     )
