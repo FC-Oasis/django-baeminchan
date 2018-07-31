@@ -15,3 +15,8 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}

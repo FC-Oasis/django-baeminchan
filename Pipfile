@@ -16,6 +16,7 @@ djangorestframework = "*"
 ipython = "*"
 django-extensions = "*"
 awsebcli = "*"
+pygraphviz = "*"
 
 [requires]
 python_version = "3.6"
