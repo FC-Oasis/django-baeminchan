@@ -3,9 +3,9 @@ from django.db import models
 
 
 class User(AbstractUser):
-    full_name = models.CharField(verbose_name='user_name', max_length=100, unique=True)
+    full_name = models.CharField(verbose_name='user_name', max_length=100)
     address = models.ManyToManyField(
-        'Address', related_name='user_addresses'
+        'Address', related_name='user_addresses', blank=True,
     )
     contact_phone = models.CharField(max_length=150, default="")
     birthday = models.CharField(max_length=200, default="")
@@ -17,3 +17,4 @@ class Address(models.Model):
     postcode = models.CharField(max_length=20)
     roadAddress = models.CharField(max_length=300)
     jibunAddress = models.CharField(max_length=300)
+
