@@ -49,13 +49,13 @@ class KakaoBackend:
 
         def create_user_from_kakao_user_info(user_info):
             kakao_user_id = user_info['id']
-            full_name = user_info['properties']['nickname']
+            fullname = user_info['properties']['nickname']
             email = user_info['kakao_account']['email']
             return User.objects.get_or_create(
                 username=kakao_user_id,
                 defaults={
                     'username': kakao_user_id,
-                    'full_name': full_name,
+                    'fullname': fullname,
                     'email': email,
                 },
             )

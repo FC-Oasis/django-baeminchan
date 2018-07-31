@@ -9,6 +9,6 @@ def kakao_login(request):
     user = authenticate(request, code=code)
     if user is not None:
         login(request, user)
-        msg = f'<h1>카카오톡 로그인 성공 : {user.full_name}<h1>'
+        msg = f'<h1>카카오톡 로그인 성공 : {user.fullname}<h1>'
         return HttpResponse(msg)
     return HttpResponse('<h1>카카오톡 로그인 실패<h1>')
