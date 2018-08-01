@@ -15,6 +15,10 @@ else:
     DEBUG = False
     ALLOWED_HOSTS = secrets['ALLOWED_HOSTS']
 
+    # HTTPS 환경에서 Session, CSRF Cookie 사용하도록 설정
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 
 def is_ec2_linux():
     """Detect if we are running on an EC2 Linux Instance
