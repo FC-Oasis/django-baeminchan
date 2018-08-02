@@ -5,5 +5,7 @@ RUN         apt -y update && apt -y dist-upgrade
 RUN         apt -y install build-essential
 RUN         apt -y install nginx supervisor
 
+RUN         pip install --upgrade pip
+
 COPY        ./requirements.txt /srv
 RUN         pip install -r /srv/requirements.txt
