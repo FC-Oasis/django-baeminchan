@@ -7,5 +7,5 @@ class User(AbstractUser):
     jibun_address = models.CharField(max_length=100, blank=True,)
     road_address = models.CharField(max_length=100, blank=True,)
     contact_phone = models.CharField(max_length=150, default="")
-    birthday = models.DateField(max_length=200, default="")
+    birthday = models.DateField(null=True, blank=True)
     # 초대코드
