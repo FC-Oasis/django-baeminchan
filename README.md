@@ -12,12 +12,17 @@
 - django-storages
 - boto3
 - uwsgi
+- djangorestframework
+- requests
 
 #### Dev
 
 - ipython
 - Django-Extensions
 - awsebcli
+- pygraphviz
+- beautifulsoup4
+- lxml
 
 ### Secrets
 
@@ -55,6 +60,8 @@
 
 ## Running
 
+#### Local
+
 ```shell
 # Move project's directory
 pipenv install
@@ -62,8 +69,25 @@ pipenv shell
 ./runlocal.sh
 ```
 
+#### Production
+
+```shell
+# Move project's directory
+pipenv install
+pipenv shell
+./runproduction.sh
+```
+
 ## Deploying
+
 ```shell
 # Move project's directory
 ./deploy.sh
+```
+
+## Logging
+
+```shell
+# Move project's directory
+./eblog.sh
 ```

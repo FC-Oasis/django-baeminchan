@@ -18,6 +18,8 @@ ipython = "*"
 django-extensions = "*"
 awsebcli = "*"
 pygraphviz = "*"
+"beautifulsoup4" = "*"
+lxml = "*"
 
 [requires]
 python_version = "3.6"
