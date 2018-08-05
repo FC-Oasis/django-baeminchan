@@ -24,7 +24,8 @@ class UserSerializer(serializers.ModelSerializer):
             'password',
             'email',
             'fullname',
-            'address',
+            'jibun_address',
+            'road_address',
             'contact_phone',
             'birthday',
         )

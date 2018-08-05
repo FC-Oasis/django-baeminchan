@@ -4,17 +4,8 @@ from django.db import models
 
 class User(AbstractUser):
     fullname = models.CharField(verbose_name='user_name', max_length=100)
-    address = models.ManyToManyField(
-        'Address', related_name='user_addresses', blank=True,
-    )
+    jibun_address = models.CharField(max_length=100, blank=True,)
+    road_address = models.CharField(max_length=100, blank=True,)
     contact_phone = models.CharField(max_length=150, default="")
     birthday = models.CharField(max_length=200, default="")
     # 초대코드
-
-
-class Address(models.Model):
-    zonecode = models.CharField(max_length=20)
-    postcode = models.CharField(max_length=20)
-    roadAddress = models.CharField(max_length=300)
-    jibunAddress = models.CharField(max_length=300)
-
