@@ -1,24 +1,21 @@
-from django.conf import settings
 from django.db import models
 
-
-class Category(models.Model):
-    name = models.CharField(max_length=250, unique=True)
-    description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='category', blank=True)
-
-    def __str__(self):
-        return '{}'.format(self.name)
+from .category import Category
 
 
 class Product(models.Model):
     # 기본정보
     name = models.CharField(max_length=250, unique=True)
     category = models.ForeignKey(Category, related_name='products', null=True, on_delete=models.SET_NULL)
-    price = models.ForeignKey('Price', related_name='product_price', null=True, on_delete=models.SET_NULL)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='product', blank=True)
     related_products = models.ManyToManyField('self', verbose_name='related products', blank=True, symmetrical=False)
+
+    # 가격
+    price = models.PositiveIntegerField(verbose_name='정가', default=0)
+    discount_price = models.PositiveIntegerField(verbose_name='할인금액', default=0)
+    sale_price = models.PositiveIntegerField(verbose_name='판매가격', default=0)
+    point_amount = models.IntegerField(verbose_name='적립될 포인트', default=0)
 
     # 상품정보고시
     type = models.CharField(max_length=300, blank=True)
@@ -47,15 +44,4 @@ class Product(models.Model):
 
     def __str__(self):
         return '{}'.format(self.name)
-
-
-class Price(models.Model):
-    price = models.PositiveIntegerField(verbose_name='정가', default=0)
-    discount_price = models.PositiveIntegerField(verbose_name='할인금액', default=0)
-    point_amount = models.IntegerField(verbose_name='적립될 포인트', default=0)
-
-
-class Coupon(models.Model):
-    pass
-
 

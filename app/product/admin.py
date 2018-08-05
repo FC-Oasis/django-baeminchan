@@ -1,14 +1,11 @@
 from django.contrib import admin
 
 
-from .models import Product, Category
-
-
-class CategoryAdmin(admin.ModelAdmin):
-    field = ['name', 'description', 'image']
+from .models import Product, Category, ParentCategory
 
 
 admin.site.register(Category)
+admin.site.register(ParentCategory)
 
 
 class ProductAdmin(admin.ModelAdmin):
