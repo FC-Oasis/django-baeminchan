@@ -5,16 +5,7 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
-
-    def create(self, validated_data):
-        user = User.objects.create(
-            **validated_data,
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-
-        return user
+    password = serializers.CharField(write_only=True, required=True, label='비밀번호')
 
     class Meta:
         model = User
@@ -29,6 +20,15 @@ class UserSerializer(serializers.ModelSerializer):
             'contact_phone',
             'birthday',
         )
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            **validated_data,
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
 
 
 class PasswordChangeSerializer(serializers.ModelSerializer):
@@ -66,8 +66,8 @@ class EmailChangeSerializer(serializers.ModelSerializer):
         fields = ('email',)
 
     def update(self, instance, validated_data):
-        instance.email = validated_data.get('email', instance.email)
+        instance.email = validated_data.get(
+            'email', instance.email
+            )
         instance.save()
         return instance
-
-
