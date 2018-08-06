@@ -53,31 +53,29 @@ def get_main_dish():
             # content의 출력 텍스트 예시 - [미노리키친] 아게다시두부곤약조림 150g
             content = li.select_one('a').get('ga_name')
 
-            # escape 코드(\)를 이용하여 중괄호 [] 안의 문자만을 추출(.*), 추출 성공
-            supplier = re.findall('\[.*\]', content)
-            # supplier 을 join 함수를 이용하여 str로 형변환
-            # 출력 예상값: [미노리키친]
-            supplier_name = ''.join(supplier)
+            print(f'content = {content}')
 
-            # []특수기호 안의 문자를 제거, \s 문자부터, 숫자를 제외한 모든 문자까지 선택
-            # ( ) 안의 요소만 출력하고자 의도,
-            # \D 숫자를 제외한 텍스트 선택,
-            # .+ 은 \D 의 1개 이상반복되는 텍스트를 선택
-            food = re.findall('\] (\D.+)', content)
-            # food_name의 예상값: 아게다시두부곤약조림
-            food_name = ''.join(food)
+            # content에 중량이 포함되어 있는지 체크
+            # (140g*2개)와 같은 표현은 중량으로 취급하지 않음(그대로 반찬이름으로 들어감)
+            if re.compile('.+?\(?(\d*\,?\.?\d+)k?g(?!\*)\)?').match(content):
+                # 중량이 포함되어 있으면 생산자, 반찬이름, 중량을 함께 추출하는 정규표현식 작성 - 미노리키친, 아게다시두부곤약조림, 150
+                # 중량 단위가 kg이면 문자열에 k 포함
+                supplier = re.findall('\[(.*)\]\s?(.+?)\s?\(?(\d*\,?\.?\d+k?)g\)?(\s.+)?', content)
+            else:
+                # 중량이 없으면 생산자, 반찬이름만 추출하는 정규표현식 작성 - 소중한식사, 명절실속세트
+                supplier = re.findall('\[(.*)\]\s?(.+)', content)
 
-            # [^\w] 모든 단어는 제외, 숫자부터 다음 2글자를 추출한다
-            # [^ ] 중괄호 안의 텍스트들은 부정의 의미를 가짐(Not), 앞의 모든 문자들을 부정
-            # ( ) 안의 요소만 출력하고자 의도,
-            # 마침표(.)은 1개의 단어를 의미,
-            # \d 는 숫자를 선택
-            # and를 의미하는 파이프라인(|)를 이용하여 kg 또는 g의 모든 요소를 선택
-            # .* 은 의도하고자 하는 kg 또는 g으로 선택되지 않는 예상치못한 일들이 있어,
-            # 무게 뒤에 오는 모든 요소들도 선택
-            weight = re.findall('[^\w](..\d[kg|g].*)', content)
-            # weight_check의 예상값: 150g
-            weight_check = ''.join(weight)
+            supplier_name = supplier[0][0]
+            food_name = ''.join(supplier[0][1::2])
+
+            # 중량이 없으면 문자열 0
+            weight_check = supplier[0][2] if len(supplier[0]) >= 4 else '0'
+
+            # 중량이 kg 단위인지 확인 후 그램 단위의 정수로 변환
+            if 'k' in weight_check:
+                weight_check = int(float(weight_check[:-1]) * 1000)
+            else:
+                weight_check = int(weight_check.replace(',', ''))
 
             # 추출하고자 하는 가격은 p 태그가 감싸고 있어 get이 아닌 get_text로 추출
             raw_price = li.select_one('p.selling-price').get_text()
@@ -94,8 +92,7 @@ def get_main_dish():
             print(detail_no)
             print(supplier_name)
             print(food_name)
-            print(weight_check.strip())
-            print(f'{price}원')
+            print(weight_check)
 
 
 get_main_dish()
