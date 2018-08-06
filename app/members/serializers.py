@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
+from rest_framework import serializers, generics
+from rest_framework.response import Response
 
 User = get_user_model()
 
@@ -69,5 +70,20 @@ class EmailChangeSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get(
             'email', instance.email
             )
+        instance.save()
+        return instance
+
+
+class ContactPhoneChangeSerializer(serializers.ModelSerializer):
+    contact_phone = serializers.CharField(max_length=500,)
+
+    class Meta:
+        model = User
+        fields = ('contact_phone',)
+
+    def update(self, instance, validated_data):
+        instance.contact_phone = validated_data.get(
+            'contact_phone', instance.contact_emial
+        )
         instance.save()
         return instance

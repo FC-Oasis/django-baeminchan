@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer
+from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer, ContactPhoneChangeSerializer
 
 User = get_user_model()
 
@@ -57,3 +57,11 @@ class EmailChange(generics.UpdateAPIView):
         IsAuthenticated,
     )
     serializer_class = EmailChangeSerializer
+
+
+class ContactPhoneChange(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (
+        IsAuthenticated,
+    )
+    serializer_class = ContactPhoneChangeSerializer
