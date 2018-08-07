@@ -37,6 +37,15 @@ AUTHENTICATION_BACKENDS = [
     'members.backends.KakaoBackend',
 ]
 
+
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
 INSTALLED_APPS = [
     'rest_framework',
     'members',
@@ -48,6 +57,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [

@@ -1,5 +1,4 @@
 from django.urls import path, include
-from rest_framework.urlpatterns import format_suffix_patterns
 
 from ..views import views
 from .. import apis
@@ -16,4 +15,6 @@ urlpatterns = [
         path('password/<int:pk>/', apis.PasswordChange.as_view()),
         path('contact_phone/<int:pk>/', apis.ContactPhoneChange.as_view()),
     ])),
+    path('auth-token/', apis.AuthToken.as_view()),
+    path('auth-test/', apis.AuthenticationTest.as_view()),
 ]
