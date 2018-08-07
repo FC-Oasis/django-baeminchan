@@ -82,3 +82,16 @@ class AuthenticationTest(APIView):
         if request.user.is_authenticated:
             return Response(UserSerializer(request.user).data)
         raise NotAuthenticated('로그인 상태가 아닙니다')
+
+
+class DeleteToken(APIView):
+    """
+    유저 객체를 받아 쿼리셋에 담고,
+    get 요청을 보내서 request로 토큰값이 확인되면 토큰값을 삭제하고
+    Response로 200을 보내줌
+    """
+    queryset = User.objects.all()
+
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
