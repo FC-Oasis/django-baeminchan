@@ -6,7 +6,9 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, label='비밀번호')
+    password = serializers.CharField(write_only=True,
+                                     required=True,
+                                     label='비밀번호')
 
     class Meta:
         model = User
@@ -87,3 +89,4 @@ class ContactPhoneChangeSerializer(serializers.ModelSerializer):
         )
         instance.save()
         return instance
+
