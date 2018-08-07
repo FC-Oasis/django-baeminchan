@@ -5,9 +5,9 @@ from .category import Category
 
 class Product(models.Model):
     # 기본정보
-    name = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250)
     category = models.ForeignKey(Category, related_name='products', null=True, on_delete=models.SET_NULL)
-    description = models.TextField(blank=True)
+    description = models.TextField(null=True, blank=True)
     thumbnail_url = models.URLField(blank=True)
     related_products = models.ManyToManyField('self', verbose_name='related products', blank=True, symmetrical=False)
 
@@ -34,7 +34,7 @@ class Product(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return '{}'.format(f'[{self.suppiler}] {name} {weight}')
+        return '{}'.format(f'[{self.supplier}] {self.name} {self.weight}')
 
 
 class ProductImage(models.Model):

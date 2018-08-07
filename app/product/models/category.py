@@ -20,7 +20,7 @@ class ParentCategory(models.Model):
 
 class Category(models.Model):
     parent_category = models.ForeignKey(ParentCategory, max_length=250, on_delete=models.CASCADE)
-    name = models.CharField(max_length=250, unique=True)
+    name = models.CharField(max_length=250)
 
     def __str__(self):
         return '{} {}'.format(self.parent_category.name, self.name)
