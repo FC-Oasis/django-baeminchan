@@ -17,5 +17,5 @@ urlpatterns = [
     ])),
     path('auth-token/', apis.AuthToken.as_view()),
     path('auth-test/', apis.AuthenticationTest.as_view()),
-    path('delete-token/', apis.DeleteToken.as_view()),
+    path('logout/', apis.Logout.as_view()),
 ]

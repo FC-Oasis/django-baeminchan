@@ -6,6 +6,7 @@ from rest_framework.compat import authenticate
 from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.urls import logout
 from rest_framework.views import APIView
 
 from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer, ContactPhoneChangeSerializer
@@ -84,14 +85,14 @@ class AuthenticationTest(APIView):
         raise NotAuthenticated('로그인 상태가 아닙니다')
 
 
-class DeleteToken(APIView):
+class Logout(APIView):
     """
     유저 객체를 받아 쿼리셋에 담고,
-    get 요청을 보내서 request로 토큰값이 확인되면 토큰값을 삭제하고
-    Response로 200을 보내줌
+    request 받은 유저의 auth_token이 맞으면 로그아웃을 시켜줌
     """
     queryset = User.objects.all()
 
     def get(self, request, format=None):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+        if request.user.auth_token:
+            logout(request)
+            return Response("로그아웃 성공", status=status.HTTP_200_OK)
