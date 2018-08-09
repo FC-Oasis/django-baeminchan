@@ -5,11 +5,13 @@ products.py
 크롤링한 데이터는 products.json 파일에 저장
 """
 import json
+import os
 
 import requests
 from bs4 import BeautifulSoup
 
-parent_categories_info = json.load(open('parent_categories_info.json', 'rt'))
+base_dir = os.path.dirname(__file__)
+parent_categories_info = json.load(open(os.path.join(base_dir, 'parent_categories_info.json'), 'rt'))
 result = list()
 
 for parent_category, info in parent_categories_info.items():
