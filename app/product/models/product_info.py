@@ -18,7 +18,7 @@ class Product(models.Model):
     point_amount = models.IntegerField(verbose_name='적립될 포인트', default=0)
 
     # 상품정보고시
-    type = models.CharField(max_length=300, blank=True)
+    type = models.TextField()
     supplier = models.CharField(max_length=100, blank=True)
     weight = models.IntegerField(default=0)
     materials = models.TextField()
@@ -42,7 +42,7 @@ class ProductImage(models.Model):
     image_url = models.URLField(blank=True)
 
     class Meta:
-        ordering = ('product',)
+        ordering = ('id',)
 
     def __str__(self):
         return '{}'.format(self.image_url)
