@@ -1,8 +1,12 @@
-from rest_framework import serializers
+from rest_framework import serializers, permissions
 from .models import ParentCategory, Category, Product, ProductImage
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
+    permission_classes = (
+        permissions.AllowAny,
+    )
+
     class Meta:
         model = ParentCategory
         fields = (
@@ -13,6 +17,9 @@ class ParentCategorySerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     parent_category = ParentCategorySerializer()
+    permission_classes = (
+        permissions.AllowAny,
+    )
 
     class Meta:
         model = Category
@@ -23,6 +30,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
+    permission_classes = (
+        permissions.AllowAny,
+    )
+
     class Meta:
         model = ProductImage
         fields = (
@@ -33,6 +44,9 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     productimage_set = ProductImageSerializer(many=True)
+    permission_classes = (
+        permissions.AllowAny,
+    )
 
     class Meta:
         model = Product
