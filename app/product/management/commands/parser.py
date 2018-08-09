@@ -76,14 +76,14 @@ def parse_product(soup):
         result['price'] = 0
         result['discount_rate'] = 0
 
-    details = soup.select('table.table_detail_info > th')
+    details = soup.select('table.table_detail_info > tbody > tr')
 
     for detail in details:
-        if detail.text == '식품의 유형':
+        if detail.select_one('th').text == '식품의 유형':
             result['type'] = detail.select_one('td').text
-        elif detail.text == '포장단위별 용량(중량), 수량':
+        elif detail.select_one('th').text == '포장단위별 용량(중량), 수량':
             result['materials'] = detail.select_one('td').text
-        elif detail.text == '알레르기 유발물질':
+        elif detail.select_one('th').text == '알레르기 유발물질':
             result['alert_allergy'] = detail.select_one('td').text
 
     result['stock'] = 10
