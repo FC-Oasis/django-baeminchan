@@ -12,6 +12,7 @@ django-storages = "*"
 uwsgi = "*"
 djangorestframework = "*"
 requests = "*"
+raven = "*"
 
 [dev-packages]
 ipython = "*"

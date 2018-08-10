@@ -1,5 +1,8 @@
 import subprocess
 import sys
+
+import raven
+
 from .base import *
 
 secrets = json.load(open(os.path.join(SECRET_DIR, 'production.json'), 'rb'))
@@ -53,6 +56,7 @@ if private_ip:
 
 INSTALLED_APPS += [
     'storages',
+    'raven.contrib.django.raven_compat',
 ]
 
 # AWS
@@ -83,40 +87,51 @@ subprocess.call(['chmod', '755', LOG_DIR])
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
+    'disable_existing_loggers': True,
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['sentry'],
     },
     'formatters': {
-        'django.server': {
-            'format': '[%(asctime)s] %(message)s',
-        }
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s '
+                      '%(process)d %(thread)d %(message)s'
+        },
     },
     'handlers': {
-        'console': {
-            'level': 'INFO',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
+        'sentry': {
+            'level': 'ERROR', # To capture more than ERROR, change to WARNING, INFO, etc.
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            'tags': {'custom-tag': 'x'},
         },
-        'file_error': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'level': 'ERROR',
-            'formatter': 'django.server',
-            'backupCount': 10,
-            'filename': os.path.join(LOG_DIR, 'error.log'),
-            'maxBytes': 10485760,
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         }
     },
     'loggers': {
-        'django': {
-            'handlers': ['console', 'file_error'],
-            'level': 'INFO',
-            'propagate': True,
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
         },
-    }
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}
+
+RAVEN_CONFIG = {
+    'dsn': secrets['SENTRY_DSN'],
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
