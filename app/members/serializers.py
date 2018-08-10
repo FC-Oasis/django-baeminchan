@@ -36,10 +36,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PasswordChangeSerializer(serializers.ModelSerializer):
     new_password = serializers.CharField(
-        read_only=True,
+        write_only=True,
     )
     check_new_password = serializers.CharField(
-        read_only=True,
+        write_only=True,
     )
 
     class Meta:
@@ -51,8 +51,7 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data.get('new_password') != data.get('check_new_password'):
-            msg = '비밀번호가 일치하지 않습니다.'
-            raise serializers.ValidationError({'check_new_password': msg})
+            raise serializers.ValidationError('비밀번호가 맞지 않습니다')
         return data
 
     def update(self, instance, validated_data):

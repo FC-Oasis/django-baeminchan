@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.http import Http404
 from rest_framework import generics, permissions, status, mixins
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
@@ -35,15 +34,18 @@ class UserDetail(mixins.DestroyModelMixin,
         return self.destroy(request, *args, **kwargs)
 
 
-class PasswordChange(generics.UpdateAPIView):
-    model = User
+class PasswordChange(APIView):
     permission_classes = (
-        IsAuthenticated,
+        permissions.IsAuthenticated,
     )
-    serializer_class = PasswordChangeSerializer
 
-    def get_object(self):
-        return self.request.user
+    def patch(self, request, *args, **kwargs):
+        serializer = PasswordChangeSerializer(request.user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        return Response(serializer.is_valid(raise_exception=True))
 
 
 class EmailChange(generics.UpdateAPIView):
@@ -95,4 +97,4 @@ class Logout(APIView):
     def get(self, request, format=None):
         if request.user.auth_token:
             logout(request)
-            return Response("로그아웃 성공", status=status.HTTP_200_OK)
+        return Response("로그아웃 성공", status=status.HTTP_200_OK)
