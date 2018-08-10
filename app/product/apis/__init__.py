@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializer import ProductSerializer
-from ..models import Product
+from ..serializer import ProductSerializer, ProductSimpleSerializer
+from ..models import Product, ParentCategory, Category
 
 
 class ProductDetail(APIView):
@@ -13,3 +14,22 @@ class ProductDetail(APIView):
         serializer = ProductSerializer(product)
 
         return Response(serializer.data)
+
+
+class ProductList(generics.ListAPIView):
+    serializer_class = ProductSimpleSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        parent_category = get_object_or_404(
+            ParentCategory,
+            name=self.request.query_params.get('parent_category', None),
+        )
+        category = get_object_or_404(
+            Category,
+            parent_category=parent_category,
+            name=self.request.query_params.get('category', None),
+        )
+        if category is not None:
+            queryset = queryset.filter(category=category)
+        return queryset

@@ -51,3 +51,20 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+class ProductSimpleSerializer(ProductSerializer):
+    productimage_set = None
+
+    class Meta:
+        model = Product
+        fields = (
+            'id',
+            'name',
+            'supplier',
+            'weight',
+            'price',
+            'discount_rate',
+            'sale_price',
+            'thumbnail_url',
+        )

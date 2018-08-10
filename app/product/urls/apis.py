@@ -4,4 +4,5 @@ from product import apis
 
 urlpatterns = [
     path('<int:pk>/', apis.ProductDetail.as_view()),
+    path('', apis.ProductList.as_view()),
 ]
