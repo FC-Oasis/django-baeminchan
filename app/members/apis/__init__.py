@@ -95,6 +95,5 @@ class Logout(APIView):
     queryset = User.objects.all()
 
     def get(self, request, format=None):
-        if request.user.auth_token:
-            logout(request)
+        request.user.auth_token.delete()
         return Response("로그아웃 성공", status=status.HTTP_200_OK)
