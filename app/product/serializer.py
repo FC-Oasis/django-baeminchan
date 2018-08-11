@@ -62,6 +62,7 @@ class ProductSimpleSerializer(ProductSerializer):
             'id',
             'name',
             'supplier',
+            'description',
             'weight',
             'price',
             'discount_rate',
