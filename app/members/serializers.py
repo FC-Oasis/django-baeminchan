@@ -84,7 +84,7 @@ class ContactPhoneChangeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.contact_phone = validated_data.get(
-            'contact_phone', instance.contact_emial
+            'contact_phone', instance.contact_phone
         )
         instance.save()
         return instance
