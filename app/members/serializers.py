@@ -25,6 +25,13 @@ class UserSerializer(serializers.ModelSerializer):
             'birthday',
         )
 
+    def validate(self, data):
+        new_phone = data.get('contact_phone')
+        if not re.match('\d{3}[-]\d{4}[-]\d{4}$', new_phone):
+            raise serializers.ValidationError('올바른 전화번호 형식이 아닙니다')
+        else:
+            return data
+
     def create(self, validated_data):
         user = User.objects.create(
             **validated_data,
