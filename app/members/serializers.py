@@ -9,7 +9,9 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True,
                                      required=True,
-                                     label='비밀번호')
+                                     label='비밀번호',
+                                     min_length=8,
+                                     help_text='8자 이상 입력',)
 
     class Meta:
         model = User
@@ -45,9 +47,11 @@ class UserSerializer(serializers.ModelSerializer):
 class PasswordChangeSerializer(serializers.ModelSerializer):
     new_password = serializers.CharField(
         write_only=True,
+        min_length=8,
     )
     check_new_password = serializers.CharField(
         write_only=True,
+        min_length=8,
     )
 
     class Meta:

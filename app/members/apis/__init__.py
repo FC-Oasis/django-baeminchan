@@ -1,4 +1,3 @@
-import re
 
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, status, mixins, serializers
