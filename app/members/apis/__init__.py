@@ -1,11 +1,12 @@
+import re
+
 from django.contrib.auth import get_user_model
-from rest_framework import generics, permissions, status, mixins
+from rest_framework import generics, permissions, status, mixins, serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
 from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.urls import logout
 from rest_framework.views import APIView
 
 from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer, ContactPhoneChangeSerializer
@@ -56,12 +57,18 @@ class EmailChange(generics.UpdateAPIView):
     serializer_class = EmailChangeSerializer
 
 
-class ContactPhoneChange(generics.UpdateAPIView):
-    queryset = User.objects.all()
+class ContactPhoneChange(APIView):
     permission_classes = (
-        IsAuthenticated,
+        permissions.IsAuthenticated,
     )
-    serializer_class = ContactPhoneChangeSerializer
+
+    def patch(self, request, *args, **kwargs):
+        serializer = ContactPhoneChangeSerializer(request.user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AuthToken(APIView):

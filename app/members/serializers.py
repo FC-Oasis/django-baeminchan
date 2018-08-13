@@ -1,6 +1,7 @@
+import re
+
 from django.contrib.auth import get_user_model
-from rest_framework import serializers, generics
-from rest_framework.response import Response
+from rest_framework import serializers
 
 User = get_user_model()
 
@@ -76,16 +77,20 @@ class EmailChangeSerializer(serializers.ModelSerializer):
 
 
 class ContactPhoneChangeSerializer(serializers.ModelSerializer):
-    contact_phone = serializers.CharField(max_length=500,)
+    contact_phone = serializers.CharField(max_length=20, write_only=True)
 
     class Meta:
         model = User
         fields = ('contact_phone',)
 
+    def validate(self, data):
+        new_phone = data.get('contact_phone')
+        if not re.match('\d{3}[-]\d{4}[-]\d{4}$', new_phone):
+            raise serializers.ValidationError('올바른 전화번호 형식이 아닙니다')
+        else:
+            return data
+
     def update(self, instance, validated_data):
-        instance.contact_phone = validated_data.get(
-            'contact_phone', instance.contact_phone
-        )
+        instance.contact_phone = validated_data.get('contact_phone')
         instance.save()
         return instance
-

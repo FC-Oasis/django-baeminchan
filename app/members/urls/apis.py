@@ -13,7 +13,7 @@ urlpatterns = [
     path('change/', include([
         path('email/<int:pk>/', apis.EmailChange.as_view()),
         path('password/<int:pk>/', apis.PasswordChange.as_view()),
-        path('contact_phone/<int:pk>/', apis.ContactPhoneChange.as_view()),
+        path('contact-phone/<int:pk>/', apis.ContactPhoneChange.as_view()),
     ])),
     path('auth-token/', apis.AuthToken.as_view()),
     path('auth-test/', apis.AuthenticationTest.as_view()),
