@@ -7,8 +7,13 @@ from product.models import Product
 
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    total_price = models.PositiveIntegerField(default=0)
     # 배송비, 적립금
+
+    @property
+    def total_price(self, total_price=0):
+        for item in self.cart_items.all():
+            total_price += item.item_total_price
+        return total_price
 
 
 class CartItem(models.Model):
@@ -32,5 +37,8 @@ class CartItem(models.Model):
         on_delete=models.CASCADE,
         blank=True,
     )
-    item_price = models.PositiveIntegerField(default=0, blank=True)
     amount = models.PositiveIntegerField(default=1)
+
+    @property
+    def item_total_price(self):
+        return self.amount * self.product.sale_price
