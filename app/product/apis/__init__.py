@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.response import Response
@@ -32,4 +33,14 @@ class ProductList(generics.ListAPIView):
         )
         if category is not None:
             queryset = queryset.filter(category=category)
+        return queryset
+
+
+class ProductSearch(generics.ListAPIView):
+    serializer_class = ProductSimpleSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(raw_name__contains=self.request.query_params.get('query', ''))
+        if not queryset:
+            raise Http404
         return queryset

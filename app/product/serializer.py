@@ -60,10 +60,8 @@ class ProductSimpleSerializer(ProductSerializer):
         model = Product
         fields = (
             'id',
-            'name',
-            'supplier',
+            'raw_name',
             'description',
-            'weight',
             'price',
             'discount_rate',
             'sale_price',
