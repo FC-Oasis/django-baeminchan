@@ -8,7 +8,7 @@ urlpatterns = [
     path('', apis.UserList.as_view()),
     path('create/', apis.UserCreate.as_view()),
     path('<int:pk>/', apis.UserDetail.as_view()),
-    path('kakao/', kakao.kakao_login, name='kakao-login'),
+    path('kakao/', kakao.AuthToken.as_view(), name='kakao-login'),
     path('delete/<int:pk>/', apis.UserDetail.as_view()),
     path('change/', include([
         path('email/<int:pk>/', apis.EmailChange.as_view()),

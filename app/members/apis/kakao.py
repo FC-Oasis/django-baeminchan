@@ -1,14 +1,21 @@
 from django.contrib.auth import get_user_model, authenticate, login
-from django.http import HttpResponse
+from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 User = get_user_model()
 
 
-def kakao_login(request):
-    code = request.GET.get('code')
-    user = authenticate(request, code=code)
-    if user is not None:
-        login(request, user)
-        msg = f'<h1>카카오톡 로그인 성공 : {user.fullname}<h1>'
-        return HttpResponse(msg)
-    return HttpResponse('<h1>카카오톡 로그인 실패<h1>')
+class AuthToken(APIView):
+    def post(self, request):
+        access_token = request.data.get('access_token')
+        user = authenticate(request, access_token=access_token)
+
+        if user:
+            token, __ = Token.objects.get_or_create(user=user)
+            data = {
+                'token': token.key,
+            }
+            return Response(data)
+        raise AuthenticationFailed('인증정보가 올바르지 않습니다')
