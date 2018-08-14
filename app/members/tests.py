@@ -62,3 +62,40 @@ class MembersTest(APITestCase):
             format='json',
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_email_change(self):
+        """
+        User의 이메일 변경 API 테스트
+        :return:
+        """
+        user_info = get_dummy_user_info()
+        user = User.objects.create_user(**user_info)
+
+        # # 테스트 코드 내에서 토큰 받아오기
+        # response = self.client.post(
+        #     self.URL + 'auth-token/',
+        #     data={
+        #         'username': user_info['username'],
+        #         'password': user_info['password'],
+        #     },
+        # )
+        #
+        # token = response.json()['token']
+        #
+        # # 테스트 코드 내에서 토큰 인증하기
+        # self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+
+        # 강제로 인증하기
+        self.client.force_authenticate(user=user)
+
+        URL = self.URL + f'change/email/{user.id}/'
+
+        response = self.client.patch(
+            URL,
+            data={
+                'email': 'a@a.com',
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['email'], 'a@a.com')
