@@ -1,4 +1,3 @@
-
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, status, mixins, serializers
 from rest_framework.authtoken.models import Token
@@ -102,4 +101,8 @@ class Logout(APIView):
 
     def get(self, request, format=None):
         request.user.auth_token.delete()
-        return Response("로그아웃 성공", status=status.HTTP_200_OK)
+
+        data = {
+            'result': '정상적으로 로그아웃 되었습니다.'
+        }
+        return Response(data, status=status.HTTP_200_OK)
