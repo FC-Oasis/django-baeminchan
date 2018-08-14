@@ -59,6 +59,7 @@ def parse_product(soup):
     result = dict()
 
     product_name = soup.select_one('h1.desc_product_name').text
+    result['raw_name'] = product_name
     result['supplier'], result['name'], result['weight'] = parse_name(product_name)
 
     result['description'] = soup.select_one('p.desc_bt_txt').text if soup.select_one('p.desc_bt_txt') else ''
