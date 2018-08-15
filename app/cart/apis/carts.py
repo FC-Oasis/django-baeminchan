@@ -1,7 +1,12 @@
-from rest_framework import generics
 
-from ..models import Cart
-from ..serializers.carts import CartSerializer
+from rest_framework import generics
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+
+from members.models import User
+from product.models import Product
+from ..models import Cart, CartItem
+from ..serializers.carts import CartSerializer, CartItemSerializer
 
 
 class CartList(generics.ListAPIView):
@@ -9,7 +14,7 @@ class CartList(generics.ListAPIView):
     serializer_class = CartSerializer
 
 
-class UserCart(generics.ListAPIView):
+class UserCart(generics.RetrieveUpdateAPIView):
     """
     pk가 일치하는 user의 cart정보를 보여줌
     """
