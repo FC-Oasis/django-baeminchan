@@ -22,17 +22,22 @@ class ProductList(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Product.objects.all()
+        parent_category_name = self.request.query_params.get('parent_category', None)
+        category_name = self.request.query_params.get('category', None)
         parent_category = get_object_or_404(
             ParentCategory,
-            name=self.request.query_params.get('parent_category', None),
+            name=parent_category_name,
         )
-        category = get_object_or_404(
-            Category,
-            parent_category=parent_category,
-            name=self.request.query_params.get('category', None),
-        )
-        if category is not None:
-            queryset = queryset.filter(category=category)
+        if category_name == 'all':
+            queryset = queryset.filter(category__parent_category__name=parent_category_name)
+        else:
+            category = get_object_or_404(
+                Category,
+                parent_category=parent_category,
+                name=category_name,
+            )
+            if category is not None:
+                queryset.filter(category=category)
         return queryset
 
 
