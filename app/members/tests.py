@@ -34,7 +34,7 @@ def get_dummy_user_info():
     dummy_user_info['birthday'] = '{}-{}-{}'.format(
         str(random.randint(1950, 2018)),
         format(random.randint(1, 12), '02'),
-        format(random.randint(1, 30), '02'),
+        format(random.randint(1, 28), '02'),
     )
 
     return dummy_user_info
