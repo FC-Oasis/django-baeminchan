@@ -10,7 +10,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, related_name='products', null=True, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)
     thumbnail_url = models.URLField(blank=True)
-    related_products = models.ManyToManyField('self', verbose_name='related products', blank=True, symmetrical=False)
+    # related_products = models.ManyToManyField('self', verbose_name='related products', blank=True, symmetrical=False)
 
     # 가격
     price = models.PositiveIntegerField(verbose_name='정가', default=0)
@@ -36,6 +36,10 @@ class Product(models.Model):
 
     def __str__(self):
         return '{}'.format(self.raw_name)
+
+    @property
+    def related_products(self):
+        return Product.objects.filter(supplier=self.supplier)
 
 
 class ProductImage(models.Model):
