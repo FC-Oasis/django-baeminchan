@@ -41,7 +41,26 @@ class ProductImageSerializer(serializers.ModelSerializer):
         )
 
 
+class RelatedProductSerializer(serializers.ModelSerializer):
+    permission_classes = (
+        permissions.AllowAny,
+    )
+
+    class Meta:
+        model = Product
+        fields = (
+            'id',
+            'raw_name',
+            'description',
+            'price',
+            'discount_rate',
+            'sale_price',
+            'thumbnail_url',
+        )
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    related_products = RelatedProductSerializer(many=True)
     category = CategorySerializer()
     productimage_set = ProductImageSerializer(many=True)
     permission_classes = (
