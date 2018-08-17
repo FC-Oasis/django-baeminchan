@@ -2,16 +2,23 @@ import re
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True,
-                                     required=True,
-                                     label='비밀번호',
-                                     min_length=8,
-                                     help_text='8자 이상 입력',)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        label='비밀번호',
+        min_length=8,
+        help_text='8자 이상 입력',)
+    email = serializers.EmailField(
+        required=True,
+        label='이메일',
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
 
     class Meta:
         model = User
@@ -28,8 +35,8 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
-        new_phone = data.get('contact_phone')
-        if not re.match('\d{3}[-]\d{4}[-]\d{4}$', new_phone):
+        phone = data.get('contact_phone')
+        if not re.match('\d{3}[-]\d{4}[-]\d{4}$', phone):
             raise serializers.ValidationError('올바른 전화번호 형식이 아닙니다')
         else:
             return data
@@ -40,8 +47,6 @@ class UserSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
-
-        return user
 
 
 class PasswordChangeSerializer(serializers.ModelSerializer):
@@ -73,7 +78,7 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
 
 
 class EmailChangeSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=500,)
+    email = serializers.EmailField(max_length=500, write_only=True,)
 
     class Meta:
         model = User
@@ -85,6 +90,11 @@ class EmailChangeSerializer(serializers.ModelSerializer):
             )
         instance.save()
         return instance
+
+    def validate_email(self, data):
+        if User.objects.filter(email=data).exists():
+            raise serializers.ValidationError('이미 사용중인 이메일입니다')
+        return data
 
 
 class ContactPhoneChangeSerializer(serializers.ModelSerializer):
