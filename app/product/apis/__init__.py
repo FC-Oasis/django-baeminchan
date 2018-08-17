@@ -1,3 +1,5 @@
+import random
+
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
@@ -38,6 +40,19 @@ class ProductList(generics.ListAPIView):
             )
             if category is not None:
                 queryset.filter(category=category)
+        return queryset
+
+
+class ProductRandom(generics.ListAPIView):
+    serializer_class = ProductSimpleSerializer
+
+    def get_queryset(self):
+        pk_list = list(range(1, Product.objects.all().count() + 1))
+        random_pk = []
+        for i in range(12):
+            random_pk.append(pk_list.pop(random.randint(0, len(pk_list))))
+        print(random_pk)
+        queryset = Product.objects.filter(pk__in=random_pk)
         return queryset
 
 
