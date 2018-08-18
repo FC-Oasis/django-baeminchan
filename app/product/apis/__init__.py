@@ -39,7 +39,7 @@ class ProductList(generics.ListAPIView):
                 name=category_name,
             )
             if category is not None:
-                queryset.filter(category=category)
+                queryset = queryset.filter(category=category)
         return queryset
 
 
