@@ -13,6 +13,7 @@ uwsgi = "*"
 djangorestframework = "*"
 requests = "*"
 raven = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 ipython = "*"
