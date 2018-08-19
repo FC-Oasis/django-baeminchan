@@ -12,7 +12,7 @@ branches:
     - master
 before_deploy:
   - cd app
-  - "./manage.py test"
+  - ./manage.py test
 deploy:
   provider: elasticbeanstalk
   access_key_id: "$AWS_ACCESS_KEY"
