@@ -34,6 +34,8 @@ script:
   - cd app
   - ./manage.py test
   - cd ..
+  # .secrets 디렉토리 staging
+  - git add -A
 
 # EB 배포 설정
 deploy:
