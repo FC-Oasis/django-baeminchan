@@ -18,6 +18,7 @@ class UserList(generics.ListAPIView):
 
 
 class UserCreate(generics.CreateAPIView):
+    queryset = User.objects.all()
     permission_classes = (
         permissions.AllowAny,
     )
