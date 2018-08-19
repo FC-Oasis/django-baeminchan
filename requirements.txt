@@ -1,0 +1,22 @@
+-i https://pypi.org/simple
+boto3==1.7.80
+botocore==1.10.80
+certifi==2018.8.13
+chardet==3.0.4
+django-cors-headers==2.4.0
+django-storages==1.6.6
+django==2.1
+djangorestframework==3.8.2
+docutils==0.14
+idna==2.7
+jmespath==0.9.3
+pillow==5.2.0
+psycopg2-binary==2.7.5
+python-dateutil==2.7.3; python_version >= '2.7'
+pytz==2018.5
+raven==6.9.0
+requests==2.19.1
+s3transfer==0.1.13
+six==1.11.0
+urllib3==1.23; python_version != '3.0.*'
+uwsgi==2.0.17.1

@@ -1,0 +1,26 @@
+language: python
+python:
+  - 3.6
+before_install:
+  - openssl aes-256-cbc -K $encrypted_71c7105b901d_key -iv $encrypted_71c7105b901d_iv
+    -in secrets.tar.enc -out secrets.tar -d
+  - tar xvf secrets.tar
+install:
+  - pip install -r requirements.txt
+branches:
+  only:
+    - master
+before_deploy:
+  - cd app
+  - "./manage.py test"
+deploy:
+  provider: elasticbeanstalk
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+  region: ap-northeast-2
+  app: baeminchan-django
+  env: baeminchan-django-dev
+  bucket_name: baeminchan-bucket
+  on:
+    branch: master
