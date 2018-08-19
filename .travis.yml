@@ -37,9 +37,18 @@ script:
   # .secrets 디렉토리 staging
   - git add -A
 
+# 배포용 압축파일 만들기
+before_deploy:
+  - mkdir -p archive
+  - cp -r . archive/
+  - cd archive
+  - ls -al
+  - zip -r archive.zip .
+
 # EB 배포 설정
 deploy:
   provider: elasticbeanstalk
+  zip_file: archive.zip
   # AWS 관련 비밀 설정은 Travis CI 홈페이지에서 설정 가능함
   access_key_id: "$AWS_ACCESS_KEY"
   secret_access_key:
