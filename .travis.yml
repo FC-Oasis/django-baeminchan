@@ -20,6 +20,7 @@ before_script:
 script:
   - cd app
   - ./manage.py test
+  - cd ..
 deploy:
   provider: elasticbeanstalk
   access_key_id: "$AWS_ACCESS_KEY"
