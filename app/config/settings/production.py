@@ -73,7 +73,20 @@ STATICFILES_STORAGE = 'config.storages.S3StaticStorage'
 
 WSGI_APPLICATION = 'config.wsgi.production.application'
 
-DATABASES = secrets['DATABASES']
+if 'test' in sys.argv:
+    # Test DB for Travis CI
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'travis_ci_test',
+            'USER': 'postgres',
+            'PASSWORD': '',
+            'PORT': 5432,
+            'HOST': 'localhost',
+        }
+    }
+else:
+    DATABASES = secrets['DATABASES']
 
 # Log
 # /var/log/django 디렉토리가 존재하면 LOG_DIR로 그대로 사용
