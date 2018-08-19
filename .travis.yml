@@ -10,7 +10,7 @@ install:
 branches:
   only:
     - master
-before_deploy:
+script:
   - cd app
   - ./manage.py test
 deploy:
