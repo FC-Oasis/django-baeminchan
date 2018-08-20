@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 
 from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer, ContactPhoneChangeSerializer
 
+
 User = get_user_model()
 
 
@@ -26,6 +27,7 @@ class UserCreate(generics.CreateAPIView):
 
 
 class UserDetail(mixins.DestroyModelMixin,
+                 generics.RetrieveAPIView,
                  generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer

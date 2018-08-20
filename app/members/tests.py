@@ -71,19 +71,19 @@ class MembersTest(APITestCase):
         user_info = get_dummy_user_info()
         user = User.objects.create_user(**user_info)
 
-        # # 테스트 코드 내에서 토큰 받아오기
-        # response = self.client.post(
-        #     self.URL + 'auth-token/',
-        #     data={
-        #         'username': user_info['username'],
-        #         'password': user_info['password'],
-        #     },
-        # )
-        #
-        # token = response.json()['token']
-        #
-        # # 테스트 코드 내에서 토큰 인증하기
-        # self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        # 테스트 코드 내에서 토큰 받아오기
+        response = self.client.post(
+            self.URL + 'auth-token/',
+            data={
+                'username': user_info['username'],
+                'password': user_info['password'],
+            },
+        )
+
+        token = response.json()['token']
+
+        # 테스트 코드 내에서 토큰 인증하기
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
 
         # 강제로 인증하기
         self.client.force_authenticate(user=user)
