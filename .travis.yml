@@ -1,51 +1,31 @@
-# 파이썬 환경 설정
 language: python
 python:
-  - 3.6
-
-# PostgreSQL 설정. Travis CI 기본 버전(9.2)은 Django 버전 2.1에서 지원하지 않음
+- 3.6
 services:
-  - postgresql
+- postgresql
 addons:
-  postgresql: "9.4"
-
-# .secrets 디렉토리 압축 해제
+  postgresql: '9.4'
 before_install:
-  - openssl aes-256-cbc -K $encrypted_71c7105b901d_key -iv $encrypted_71c7105b901d_iv
-    -in secrets.tar.enc -out secrets.tar -d
-  - tar xvf secrets.tar
-
-# 테스트 코드 환경 추가
+- openssl aes-256-cbc -K $encrypted_71c7105b901d_key -iv $encrypted_71c7105b901d_iv
+  -in secrets.tar.enc -out secrets.tar -d
+- tar xvf secrets.tar
 install:
-  - pip install -r requirements.txt
-
-# master 브랜치에서만 CI 동작하도록 설정
+- pip install -r requirements.txt
 branches:
   only:
-    - master
-
-# 테스트 코드용 DB 설정
+  - master
 before_script:
-  - psql -c 'create database travis_ci_test;' -U postgres
-
-# 테스트 코드 실행
-# 코드 실행 후 루트 디렉토리로 이동해야만 배포 가능함
+- psql -c 'create database travis_ci_test;' -U postgres
 script:
-  - cd app
-  - ./manage.py test
-  - cd ..
-  # .secrets 디렉토리 staging
-  - git add -A
-
-# 배포용 압축파일 만들기
+- cd app
+- "./manage.py test"
+- cd ..
+- git add -A
 before_deploy:
-  - zip -r archive.zip .
-
-# EB 배포 설정
+- zip -r archive.zip .
 deploy:
   provider: elasticbeanstalk
   zip_file: archive.zip
-  # AWS 관련 비밀 설정은 Travis CI 홈페이지에서 설정 가능함
   access_key_id: "$AWS_ACCESS_KEY"
   secret_access_key:
     secure: "$AWS_SECRET_KEY"
@@ -53,9 +33,6 @@ deploy:
   app: baeminchan-django
   env: baeminchan-django-dev
   bucket_name: baeminchan-bucket
-
-  # Travis가 현재 commit 단위 이후 변경사항을 삭제하지 않도록 설정
-  # .secrets 디렉토리가 commit 단위 이후 새로 생성되었기 때문에 필요함
   skip_cleanup: true
   on:
     branch: master
