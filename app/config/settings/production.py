@@ -73,7 +73,7 @@ STATICFILES_STORAGE = 'config.storages.S3StaticStorage'
 
 WSGI_APPLICATION = 'config.wsgi.production.application'
 
-if 'test' in sys.argv:
+if 'TRAVIS' in os.environ:
     # Test DB for Travis CI
     DATABASES = {
         'default': {
