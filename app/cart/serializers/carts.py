@@ -7,19 +7,8 @@ from members.serializers import UserSerializer
 User = get_user_model()
 
 
-class ProductDetailForCartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = (
-            'pk',
-            'name',
-            'sale_price',
-        )
-        read_only_fields = ('sale_price', )
-
-
 class CartItemSerializer(serializers.ModelSerializer):
-    product = ProductDetailForCartSerializer()
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
 
     class Meta:
         model = CartItem
@@ -29,6 +18,22 @@ class CartItemSerializer(serializers.ModelSerializer):
             'amount',
             'item_total_price',
         )
+
+    def create(self, validated_data):
+        product = validated_data['product']
+        amount = validated_data['amount']
+        cart = Cart.objects.get(user=self.context['request'].user)
+        cart_item, __ = CartItem.objects.get_or_create(
+            product=product,
+            defaults={
+                'cart': cart,
+                'amount': amount,
+            }
+        )
+        if __ is False:
+            cart_item.amount += amount
+            cart_item.save()
+        return cart_item
 
     def update(self, instance, validated_data):
         instance.amount = validated_data.get('amount', instance.amount)
@@ -47,4 +52,4 @@ class CartSerializer(serializers.ModelSerializer):
             'cart_items',
             'total_price',
         )
-        read_only_fields = ('user', )
+
