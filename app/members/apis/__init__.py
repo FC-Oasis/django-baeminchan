@@ -1,5 +1,7 @@
+from random import randint
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status, mixins, serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
@@ -7,7 +9,9 @@ from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer, ContactPhoneChangeSerializer
+from members.models import Phone
+from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer, ContactPhoneChangeSerializer, \
+    PhoneSerializer, PhoneAuthSerializer
 
 
 User = get_user_model()
@@ -121,3 +125,81 @@ class Logout(APIView):
             'result': '정상적으로 로그아웃 되었습니다.'
         }
         return Response(data, status=status.HTTP_200_OK)
+
+
+class PhoneCreate(generics.CreateAPIView, mixins.UpdateModelMixin):
+    queryset = Phone.objects.all()
+    permission_classes = (
+        permissions.AllowAny,
+    )
+    serializer_class = PhoneSerializer
+    lookup_field = 'contact_phone'
+
+    def get_object(self):
+        return get_object_or_404(Phone, contact_phone=self.request.data.get('contact_phone'))
+
+    def create(self, request, *args, **kwargs):
+        contact_phone = request.data.get('contact_phone')
+        auth_key = str(randint(100000, 999999))
+        mutable = request.data._mutable
+        request.data._mutable = True
+        request.data['auth_key'] = auth_key
+        request.data._mutable = mutable
+        PhoneCreate.send_sms(contact_phone, auth_key)
+        return super(PhoneCreate, self).create(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        contact_phone = request.data.get('contact_phone')
+        auth_key = str(randint(100000, 999999))
+        mutable = request.POST._mutable
+        request.POST._mutable = True
+        request.POST['auth_key'] = auth_key
+        request.POST._mutable = mutable
+        PhoneCreate.send_sms(contact_phone, auth_key)
+        return self.update(request, *args, **kwargs)
+
+    @staticmethod
+    def send_sms(contact_phone, auth_key):
+        import requests
+        from config.settings.production import secrets
+
+        BLUEHOUSELAB_SMS_API_ID = secrets['BLUEHOUSELAB_SMS_API_ID']
+        BLUEHOUSELAB_SMS_API_KEY = secrets['BLUEHOUSELAB_SMS_API_KEY']
+        BLUEHOUSELAB_SENDER = secrets['BLUEHOUSELAB_SENDER']
+        receiver = contact_phone.replace('-', '')
+        content = f'[배민찬COPY] 인증번호는 {auth_key}입니다.'
+
+        requests.post(
+            'https://api.bluehouselab.com/smscenter/v1.0/sendsms',
+            auth=requests.auth.HTTPBasicAuth(
+                BLUEHOUSELAB_SMS_API_ID,
+                BLUEHOUSELAB_SMS_API_KEY,
+            ),
+            headers={
+                'Content-Type': 'application/json; charset=utf-8',
+            },
+            json={
+                'sender': BLUEHOUSELAB_SENDER,
+                'receivers': [receiver],
+                'content': content,
+            }
+        )
+
+
+class PhoneAuth(APIView):
+    def post(self, request):
+        serializer = PhoneAuthSerializer(data=request.data)
+        if serializer.is_valid():
+            contact_phone = request.data.get('contact_phone')
+            auth_key = request.data.get('auth_key')
+            if Phone.objects.filter(contact_phone=contact_phone, auth_key=auth_key).exists():
+                data = {
+                    'result': '핸드폰 번호가 인증되었습니다.'
+                }
+                return Response(data, status=status.HTTP_200_OK)
+            else:
+                data = {
+                    'result': '핸드폰 번호 인증 실패'
+                }
+                return Response(data, status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.is_valid(raise_exception=True))

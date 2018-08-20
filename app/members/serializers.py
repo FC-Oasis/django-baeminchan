@@ -1,8 +1,11 @@
 import re
 
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+
+from members.models import Phone
 
 User = get_user_model()
 
@@ -116,3 +119,33 @@ class ContactPhoneChangeSerializer(serializers.ModelSerializer):
         instance.contact_phone = validated_data.get('contact_phone')
         instance.save()
         return instance
+
+
+class PhoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Phone
+        fields = '__all__'
+
+    def validate(self, data):
+        new_phone = data.get('contact_phone')
+
+        if not re.match('\d{3}[-]\d{4}[-]\d{4}$', new_phone):
+            raise serializers.ValidationError('올바른 전화번호 형식이 아닙니다')
+        else:
+            return data
+
+
+class PhoneAuthSerializer(PhoneSerializer):
+    class Meta:
+        model = Phone
+        fields = '__all__'
+
+    def validate(self, data):
+        super().validate(data)
+        created_at = Phone.objects.get(contact_phone=data.get('contact_phone')).created_at
+        now = timezone.now()
+
+        if created_at + timezone.timedelta(minutes=5) <= now:
+            raise serializers.ValidationError('인증 가능 시간이 지났습니다.')
+        else:
+            return data

@@ -18,4 +18,6 @@ urlpatterns = [
     path('auth-token/', apis.AuthToken.as_view()),
     path('auth-test/', apis.AuthenticationTest.as_view()),
     path('logout/', apis.Logout.as_view()),
+    path('phone/', apis.PhoneCreate.as_view()),
+    path('phone/auth/', apis.PhoneAuth.as_view()),
 ]
