@@ -27,13 +27,19 @@ class UserCreate(generics.CreateAPIView):
 
 
 class UserDetail(mixins.DestroyModelMixin,
-                 generics.RetrieveAPIView,
                  generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class UserDetailSearch(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return Response(UserSerializer(request.user).data)
+        raise NotAuthenticated('로그인을 먼저 해주세요')
 
 
 class PasswordChange(APIView):
