@@ -68,3 +68,14 @@ class ProductSearch(generics.ListAPIView):
         if not queryset:
             raise Http404
         return queryset
+
+
+class ProductDiscount(generics.ListAPIView):
+    serializer_class = ProductSimpleSerializer
+    pagination_class = ProductListResultsSetPagination
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(discount_rate__gt=0)
+        if not queryset:
+            raise Http404
+        return queryset
