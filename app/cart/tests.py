@@ -30,10 +30,11 @@ class CartItemTest(APITestCase):
 
 
 class UserCartGetTest(APITestCase):
-    URL = 'api/carts/usercart/'
+    URL = '/api/carts/usercart/'
 
     def test_cart_create(self):
         user = User.objects.create_user(username='dummy')
         self.client.force_authenticate(user=user)
         response = self.client.get(self.URL)
-        print(response)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
