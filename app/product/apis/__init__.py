@@ -75,7 +75,8 @@ class ProductDiscount(generics.ListAPIView):
     pagination_class = ProductListResultsSetPagination
 
     def get_queryset(self):
-        queryset = Product.objects.filter(discount_rate__gt=0)
+        min = self.request.query_params.get('min', 1)
+        queryset = Product.objects.filter(discount_rate__gte=min).order_by('discount_rate')
         if not queryset:
             raise Http404
         return queryset
