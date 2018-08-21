@@ -22,15 +22,15 @@ class CartItemSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         product = validated_data['product']
         amount = validated_data['amount']
-        cart = Cart.objects.get(user=self.context['request'].user)
-        cart_item, __ = CartItem.objects.get_or_create(
+        cart, cart_created = Cart.objects.get_or_create(user=self.context['request'].user)
+        cart_item, cart_item_created = CartItem.objects.get_or_create(
             product=product,
             defaults={
                 'cart': cart,
                 'amount': amount,
             }
         )
-        if __ is False:
+        if cart_item_created is False:
             cart_item.amount += amount
             cart_item.save()
         return cart_item
@@ -52,4 +52,3 @@ class CartSerializer(serializers.ModelSerializer):
             'cart_items',
             'total_price',
         )
-

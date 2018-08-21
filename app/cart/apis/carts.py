@@ -1,7 +1,5 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, mixins
 from rest_framework.generics import get_object_or_404
-
-from members.models import User
 
 from ..models import Cart, CartItem
 from ..serializers.carts import CartSerializer, CartItemSerializer
@@ -20,13 +18,15 @@ class UserCart(generics.RetrieveUpdateAPIView):
         permissions.IsAuthenticated,
     )
     serializer_class = CartSerializer
-    lookup_field = 'pk'
 
     def get_serializer_context(self):
         return {'request': self.request}
 
     def get_queryset(self):
         queryset = Cart.objects.all()
+        cart, __ = Cart.objects.get_or_create(
+            user=self.request.user
+        )
         return queryset.filter(user=self.request.user)
 
     def get_object(self):
@@ -64,6 +64,9 @@ class UserCartItemDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticated,
     )
     serializer_class = CartItemSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     def get_queryset(self):
         queryset = CartItem.objects.all()
