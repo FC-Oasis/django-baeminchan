@@ -49,13 +49,15 @@ class ProductRandom(generics.ListAPIView):
     serializer_class = ProductSimpleSerializer
 
     def get_queryset(self):
-        pk_list = list(range(1, Product.objects.all().count() + 1))
-        random_pk = []
-        for i in range(12):
-            random_pk.append(pk_list.pop(random.randint(0, len(pk_list))))
-        print(random_pk)
-        queryset = Product.objects.filter(pk__in=random_pk)
-        return queryset
+        random_pk_list = []
+        categories = ParentCategory.objects.values_list('pk', flat=True)
+
+        for parent_category in categories:
+            pk_list = list(Product.objects.filter(category__parent_category=parent_category).values_list('pk', flat=True))
+            for i in range(12):
+                random_pk_list.append(pk_list.pop(pk_list.index(random.choice(pk_list))))
+        qs = Product.objects.filter(pk__in=random_pk_list).select_related('category__parent_category').order_by('id')
+        return qs
 
 
 class ProductSearch(generics.ListAPIView):
