@@ -139,17 +139,24 @@ class PhoneCreate(generics.CreateAPIView, mixins.UpdateModelMixin):
     def get_object(self):
         return get_object_or_404(Phone, contact_phone=self.request.data.get('contact_phone'))
 
-    def perform_create(self, serializer):
-        contact_phone = self.request.data.get('contact_phone')
+    def create(self, request, *args, **kwargs):
+        contact_phone = request.data.get('contact_phone')
         auth_key = str(randint(100000, 999999))
-        self.request.data['auth_key'] = auth_key
-        serializer.save(auth_key=auth_key)
+        mutable = request.data._mutable
+        request.data._mutable = True
+        request.data['auth_key'] = auth_key
+        request.data._mutable = mutable
+        response = super(PhoneCreate, self).create(request, *args, **kwargs)
         PhoneCreate.send_sms(contact_phone, auth_key)
+        return response
 
     def patch(self, request, *args, **kwargs):
         contact_phone = request.data.get('contact_phone')
         auth_key = str(randint(100000, 999999))
-        request.data['auth_key'] = auth_key
+        mutable = request.POST._mutable
+        request.POST._mutable = True
+        request.POST['auth_key'] = auth_key
+        request.POST._mutable = mutable
         response = self.update(request, *args, **kwargs)
         PhoneCreate.send_sms(contact_phone, auth_key)
         return response
