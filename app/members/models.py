@@ -28,6 +28,7 @@ class User(AbstractUser):
 class Phone(models.Model):
     auth_key = models.CharField(max_length=6, default="")
     contact_phone = models.CharField(max_length=15,
+                                     primary_key=True,
                                      default="",
                                      verbose_name='전화번호',
                                      help_text='필수입력, {3}-{4}-{4}형식만 허용')

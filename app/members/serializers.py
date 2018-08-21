@@ -140,12 +140,12 @@ class PhoneAuthSerializer(PhoneSerializer):
         model = Phone
         fields = '__all__'
 
-    def validate(self, data):
-        super().validate(data)
-        created_at = Phone.objects.get(contact_phone=data.get('contact_phone')).created_at
-        now = timezone.now()
-
-        if created_at + timezone.timedelta(minutes=5) <= now:
-            raise serializers.ValidationError('인증 가능 시간이 지났습니다.')
-        else:
-            return data
+    # def validate(self, data):
+    #     super().validate(data)
+    #     created_at = Phone.objects.get(contact_phone=data.get('contact_phone')).created_at
+    #     now = timezone.now()
+    #
+    #     if created_at + timezone.timedelta(minutes=5) <= now:
+    #         raise serializers.ValidationError('인증 가능 시간이 지났습니다.')
+    #     else:
+    #         return data

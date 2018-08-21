@@ -2,6 +2,7 @@ from random import randint
 
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics, permissions, status, mixins, serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import authenticate
@@ -145,8 +146,9 @@ class PhoneCreate(generics.CreateAPIView, mixins.UpdateModelMixin):
         request.data._mutable = True
         request.data['auth_key'] = auth_key
         request.data._mutable = mutable
+        response = super(PhoneCreate, self).create(request, *args, **kwargs)
         PhoneCreate.send_sms(contact_phone, auth_key)
-        return super(PhoneCreate, self).create(request, *args, **kwargs)
+        return response
 
     def patch(self, request, *args, **kwargs):
         contact_phone = request.data.get('contact_phone')
@@ -155,8 +157,9 @@ class PhoneCreate(generics.CreateAPIView, mixins.UpdateModelMixin):
         request.POST._mutable = True
         request.POST['auth_key'] = auth_key
         request.POST._mutable = mutable
+        response = self.update(request, *args, **kwargs)
         PhoneCreate.send_sms(contact_phone, auth_key)
-        return self.update(request, *args, **kwargs)
+        return response
 
     @staticmethod
     def send_sms(contact_phone, auth_key):
@@ -188,18 +191,18 @@ class PhoneCreate(generics.CreateAPIView, mixins.UpdateModelMixin):
 
 class PhoneAuth(APIView):
     def post(self, request):
-        serializer = PhoneAuthSerializer(data=request.data)
-        if serializer.is_valid():
-            contact_phone = request.data.get('contact_phone')
-            auth_key = request.data.get('auth_key')
-            if Phone.objects.filter(contact_phone=contact_phone, auth_key=auth_key).exists():
+        contact_phone = request.data.get('contact_phone')
+        auth_key = request.data.get('auth_key')
+        obj = get_object_or_404(Phone, contact_phone=contact_phone, auth_key=auth_key)
+        if obj is not None:
+            created_at = obj.created_at
+            now = timezone.now()
+
+            if created_at + timezone.timedelta(minutes=5) <= now:
+                raise serializers.ValidationError('인증 가능 시간이 지났습니다.')
+            else:
+                obj.delete()
                 data = {
                     'result': '핸드폰 번호가 인증되었습니다.'
                 }
                 return Response(data, status=status.HTTP_200_OK)
-            else:
-                data = {
-                    'result': '핸드폰 번호 인증 실패'
-                }
-                return Response(data, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.is_valid(raise_exception=True))
