@@ -65,6 +65,9 @@ def parse_product(soup):
     result['description'] = soup.select_one('p.desc_bt_txt').text if soup.select_one('p.desc_bt_txt') else ''
     result['thumbnail_url'] = soup.select_one('div.image_top > img').get('src')
 
+    for index, img in enumerate(soup.select('a.top_thumb > img'), start=2):
+        result[f'thumbnail_url{index}'] = img.get('src')
+
     origin_price = soup.select_one('del.origin-price')
     sale_price = int(soup.select_one('strong.sale-price').text[:-1].replace(',', ''))
     result['sale_price'] = sale_price
