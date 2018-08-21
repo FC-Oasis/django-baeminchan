@@ -183,7 +183,21 @@ class MembersTest(APITestCase):
         self.assertIsNotNone(auth_key_prev)
         self.assertNotEqual(auth_key_prev, auth_key)
 
+    def test_duplicated_phone(self):
+        URL = self.URL + 'phone/'
+
+        response = self.client
+        for __ in range(2):
+            response = self.client.post(
+                URL,
+                data={
+                    'contact_phone': '010-1234-5678',
+                }
+            )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_phone_auth(self):
+        import pprint
         URL = self.URL + 'phone/'
         response = self.client.post(
             URL,
@@ -192,6 +206,15 @@ class MembersTest(APITestCase):
             }
         )
         auth_key = response.json()['auth_key']
+
+        response = self.client.post(
+            URL + 'auth/',
+            data={
+                'contact_phone': '010-1234-5678',
+                'auth_key': '000',
+            }
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         response = self.client.post(
             URL + 'auth/',
@@ -206,7 +229,7 @@ class MembersTest(APITestCase):
             URL + 'auth/',
             data={
                 'contact_phone': '010-1234-5678',
-                'auth_key': '000',
+                'auth_key': auth_key,
             }
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
