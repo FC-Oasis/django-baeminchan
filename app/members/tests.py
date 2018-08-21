@@ -1,3 +1,4 @@
+import json
 import random
 import string
 
@@ -155,17 +156,19 @@ class MembersTest(APITestCase):
         URL = self.URL + 'phone/'
         response = self.client.post(
             URL,
-            data={
+            json.dumps({
                 'contact_phone': '01012345678',
-            }
+            }),
+            content_type='application/json',
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         response = self.client.post(
             URL,
-            data={
+            json.dumps({
                 'contact_phone': '010-1234-5678',
-            }
+            }),
+            content_type='application/json',
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -174,9 +177,10 @@ class MembersTest(APITestCase):
 
         response = self.client.patch(
             URL,
-            data={
+            json.dumps({
                 'contact_phone': '010-1234-5678',
-            }
+            }),
+            content_type='application/json',
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -192,9 +196,10 @@ class MembersTest(APITestCase):
         for __ in range(2):
             response = self.client.post(
                 URL,
-                data={
+                json.dumps({
                     'contact_phone': '010-1234-5678',
-                }
+                }),
+                content_type='application/json',
             )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -203,35 +208,39 @@ class MembersTest(APITestCase):
         URL = self.URL + 'phone/'
         response = self.client.post(
             URL,
-            data={
+            json.dumps({
                 'contact_phone': '010-1234-5678',
-            }
+            }),
+            content_type='application/json',
         )
         auth_key = response.json()['auth_key']
 
         response = self.client.post(
             URL + 'auth/',
-            data={
+            json.dumps({
                 'contact_phone': '010-1234-5678',
                 'auth_key': '000',
-            }
+            }),
+            content_type='application/json',
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
         response = self.client.post(
             URL + 'auth/',
-            data={
+            json.dumps({
                 'contact_phone': '010-1234-5678',
                 'auth_key': auth_key,
-            }
+            }),
+            content_type='application/json',
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.post(
             URL + 'auth/',
-            data={
+            json.dumps({
                 'contact_phone': '010-1234-5678',
                 'auth_key': auth_key,
-            }
+            }),
+            content_type='application/json',
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
