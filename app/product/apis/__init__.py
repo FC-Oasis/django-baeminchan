@@ -32,7 +32,7 @@ class ProductList(generics.ListAPIView):
             ParentCategory,
             name=parent_category_name,
         )
-        if category_name == 'all':
+        if category_name == '전체보기':
             queryset = queryset.filter(category__parent_category__name=parent_category_name)
         else:
             category = get_object_or_404(
