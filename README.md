@@ -1,4 +1,4 @@
-# baeminchan-django
+# baeminchan-django [![Build Status](https://www.travis-ci.org/FC-Oasis/baeminchan-django.svg?branch=master)](https://www.travis-ci.org/FC-Oasis/baeminchan-django)
 
 ## Requirements
 
@@ -14,6 +14,8 @@
 - uwsgi
 - djangorestframework
 - requests
+- raven
+- django-cors-headers
 
 #### Dev
 
@@ -54,7 +56,14 @@
   "AWS_DEFAULT_ACL": "private",
   "AWS_S3_REGION_NAME": "<Your region like ap-northeast-2>",
   "AWS_S3_SIGNATURE_VERSION": "s3v4",
-  "AWS_STORAGE_BUCKET_NAME": "<Your Bucket name>"
+  "AWS_STORAGE_BUCKET_NAME": "<Your Bucket name>",
+  
+  "KAKAO_REST_API_KEY": "<Your KAKAO REST API KEY>",
+  "SENTRY_DSN": "<Your SENTRY DSN>",
+  "BLUEHOUSELAB_SMS_API_ID": "<Your BLUEHOUSELAB API ID>",
+  "BLUEHOUSELAB_SMS_API_KEY": "<Your BLUEHOUSELAB API KEY>",
+  "BLUEHOUSELAB_SENDER": "<Phone number for sender>",
+  "AWS_ELASTI_CACHE": "<Your ElastiCache Endpoint>"
 }
 ```
 
