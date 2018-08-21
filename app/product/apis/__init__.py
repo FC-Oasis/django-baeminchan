@@ -6,6 +6,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..pagination import ProductListResultsSetPagination
 from ..serializer import ProductSerializer, ProductSimpleSerializer
 from ..models import Product, ParentCategory, Category
 
@@ -21,6 +22,7 @@ class ProductDetail(APIView):
 
 class ProductList(generics.ListAPIView):
     serializer_class = ProductSimpleSerializer
+    pagination_class = ProductListResultsSetPagination
 
     def get_queryset(self):
         queryset = Product.objects.all()
