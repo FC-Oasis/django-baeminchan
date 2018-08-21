@@ -58,16 +58,17 @@ class UserCartItemList(generics.ListCreateAPIView):
 
 class UserCartItemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    pk가 일치하는 user의 cart에 담긴 아이템을 보여줌
+    request.user의 cart에 담긴 아이템을 보여줌
     """
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
     serializer_class = CartItemSerializer
 
     def get_queryset(self):
         queryset = CartItem.objects.all()
-        user_pk = self.kwargs.get('user_pk')
-        user = get_object_or_404(User, id=user_pk)
         cart = get_object_or_404(
             Cart,
-            user=user,
+            user=self.request.user,
         )
         return queryset.filter(cart=cart)
