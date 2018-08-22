@@ -2,6 +2,7 @@ import json
 
 import requests
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import ValidationError
 
 from config.settings.production import secrets
 
@@ -50,7 +51,10 @@ class KakaoBackend:
         def create_user_from_kakao_user_info(user_info):
             kakao_user_id = user_info['id']
             fullname = user_info['properties']['nickname']
-            email = user_info['kakao_account']['email']
+            if user_info['kakao_account']['has_email'] and user_info['kakao_account']['email']:
+                email = user_info['kakao_account']['email']
+            else:
+                raise ValidationError("이메일이 없는 카카오 계정입니다. (또는 이메일 정보제공 동의 필요)")
             return User.objects.get_or_create(
                 username=kakao_user_id,
                 defaults={
