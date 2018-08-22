@@ -52,7 +52,7 @@ class Product(models.Model):
         rating_qs = self.comment_set.values_list('rating')
         if rating_qs:
             rating_list = list(rating_tuple[0] for rating_tuple in rating_qs)
-            return mean(rating_list)
+            return round(mean(rating_list) * 2) / 2
         else:
             return 0
 
