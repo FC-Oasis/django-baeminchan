@@ -42,7 +42,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     order = models.ForeignKey(
         Order,
-        related_name='cart_items',
+        related_name='order_items',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
