@@ -11,15 +11,15 @@ RUN         curl -sL https://deb.nodesource.com/setup_8.x | bash -
  # Nginx, supervisor, Node.js설치
 RUN         apt-get -y install nginx supervisor nodejs
 
- # Backend 및 Frontend의 패키지들을 미리 install
 COPY        ./requirements.txt              /srv/requirements.txt
-COPY        ./front/package.json            /srv/package.json
-COPY        ./front/package-lock.json       /srv/package-lock.json
 
-# pipenv lock --requirements > requirements.txt 으로 생성
+RUN         mkdir /srv/front
+COPY        ./front/package.json            /srv/front/package.json
+COPY        ./front/package-lock.json       /srv/front/package-lock.json
+
 WORKDIR     /srv/
-
-RUN         npm install
-
 RUN         pip install --upgrade pip
 RUN         pip install -r /srv/requirements.txt
+
+WORKDIR     /srv/front
+RUN         npm install

@@ -11,7 +11,7 @@ COPY        .                       ${PROJECT_DIR}
 WORKDIR     ${PROJECT_DIR}
 
 # Front-end
-RUN         mv -f /srv/node_modules/    /srv/backend/front/
+RUN         mv /srv/backend/front/*  /srv/front/
 
 RUN         cp -f ${PROJECT_DIR}/.config/${BUILD_MODE}/nginx.conf           /etc/nginx
 RUN         cp -f ${PROJECT_DIR}/.config/${BUILD_MODE}/nginx_app.conf       /etc/nginx/sites-available
@@ -23,4 +23,10 @@ RUN         cp -f ${PROJECT_DIR}/.config/${BUILD_MODE}/supervisor_app.conf  /etc
 
 EXPOSE      7000
 
-CMD         supervisord -n
+# Front-end
+WORKDIR     /srv/front
+RUN         npm run build
+
+# Nginx설치와 동시에 실행되던 nginx daemon종료 후
+# supervisor를 사용해 Nginx, Django, Front를 실행
+CMD         pkill nginx; supervisord -n
