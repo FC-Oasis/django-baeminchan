@@ -49,8 +49,9 @@ class Product(models.Model):
         return Product.objects.filter(supplier=self.supplier)
 
     def avg_rating(self):
-        rating_list = list(rating for rating in self.comment_set.values_list('rating')[0])
-        if rating_list:
+        rating_qs = self.comment_set.values_list('rating')
+        if rating_qs:
+            rating_list = list(rating_tuple[0] for rating_tuple in rating_qs)
             return mean(rating_list)
         else:
             return 0
