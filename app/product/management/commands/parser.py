@@ -63,7 +63,7 @@ def parse_product(soup):
     result['supplier'], result['name'], result['weight'] = parse_name(product_name)
 
     result['description'] = soup.select_one('p.desc_bt_txt').text if soup.select_one('p.desc_bt_txt') else ''
-    result['thumbnail_url'] = soup.select_one('div.image_top > img').get('src')
+    result['thumbnail_url1'] = soup.select_one('div.image_top > img').get('src')
 
     for index, img in enumerate(soup.select('a.top_thumb > img'), start=2):
         result[f'thumbnail_url{index}'] = img.get('src')

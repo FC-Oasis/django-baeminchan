@@ -9,7 +9,7 @@ class Product(models.Model):
     name = models.CharField(max_length=250)
     category = models.ForeignKey(Category, related_name='products', null=True, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)
-    thumbnail_url = models.URLField(blank=True)
+    thumbnail_url1 = models.URLField(blank=True)
     thumbnail_url2 = models.URLField(blank=True, null=True)
     thumbnail_url3 = models.URLField(blank=True, null=True)
     thumbnail_url4 = models.URLField(blank=True, null=True)
