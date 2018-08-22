@@ -60,6 +60,9 @@ class RelatedProductSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    avg_rating = serializers.ReadOnlyField()
+    comment_count = serializers.ReadOnlyField()
+
     related_products = RelatedProductSerializer(many=True)
     category = CategorySerializer()
     productimage_set = ProductImageSerializer(many=True)
@@ -85,4 +88,6 @@ class ProductSimpleSerializer(ProductSerializer):
             'discount_rate',
             'sale_price',
             'thumbnail_url1',
+            'avg_rating',
+            'comment_count',
         )

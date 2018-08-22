@@ -1,3 +1,5 @@
+from statistics import mean
+
 from django.db import models
 
 from .category import Category
@@ -45,6 +47,16 @@ class Product(models.Model):
     @property
     def related_products(self):
         return Product.objects.filter(supplier=self.supplier)
+
+    def avg_rating(self):
+        rating_list = self.comment_set.all().values_list('rating')
+        if rating_list:
+            return mean(rating_list)
+        else:
+            return 0
+
+    def comment_count(self):
+        return self.comment_set.count()
 
 
 class ProductImage(models.Model):
