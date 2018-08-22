@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import CartItem, Order, Cart
+from ..models import CartItem, Order
 from ..serializers.carts import CartItemSerializer
 
 
@@ -33,5 +33,5 @@ class OrderSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         status = validated_data['order_status']
         instance.order_status = status
-        instance.save()
+        instance.save(force_update=True)
         return instance

@@ -1,8 +1,8 @@
-from rest_framework import generics, permissions, mixins
+from rest_framework import generics, permissions
 from rest_framework.generics import get_object_or_404
 
 from ..models import Cart, CartItem
-from ..serializers.carts import CartSerializer, CartItemSerializer
+from ..serializers.carts import CartSerializer, CartItemSerializer, CartItemAddSerializer
 
 
 class CartList(generics.ListAPIView):
@@ -42,7 +42,13 @@ class UserCartItemList(generics.ListCreateAPIView):
     permission_classes = (
         permissions.IsAuthenticated,
     )
-    serializer_class = CartItemSerializer
+    #serializer_class = CartItemSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CartItemSerializer
+        elif self.request.method == 'POST':
+            return CartItemAddSerializer
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -63,7 +69,13 @@ class UserCartItemDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (
         permissions.IsAuthenticated,
     )
-    serializer_class = CartItemSerializer
+    #serializer_class = CartItemSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return CartItemSerializer
+        else:
+            return CartItemAddSerializer
 
     def get_serializer_context(self):
         return {'request': self.request}
