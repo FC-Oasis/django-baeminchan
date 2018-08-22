@@ -235,3 +235,43 @@ class MembersTest(APITestCase):
             }
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def test_duplicate_email_validation(self):
+        """
+        check@duplicate.com 이메일을 A 라는 유저가 등록했을 때
+        B 유저가 check@duplicate.com 이라는 이메일을 가지지 못하도록 테스트 설정
+        :return:
+        """
+        user_info = get_dummy_user_info()
+        user = User.objects.create_user(**user_info)
+
+        self.client.force_authenticate(user=user)
+
+        # /api/users/change/email/1/
+        URL = self.URL + f'change/email/{user.id}/'
+
+        # response 받는 유저데이터의 email 과 비교하기 위한 test data 를 생성
+        compare_with_response_data = User.objects.create_user(
+            username='test',
+            password='pass1122',
+            email='check@duplicate.com',
+        )
+
+        response = self.client.patch(
+            URL,
+            data={
+                'email': 'check@duplicate.com',
+            },
+        )
+
+        self.assertRaises(ValidationError)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json(),
+            {
+                "email": [
+                    "이미 사용중인 이메일입니다"
+                ]
+            },
+        )
