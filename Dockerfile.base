@@ -3,9 +3,22 @@ MAINTAINER  yeojin.dev@gmail.com
 
 RUN         apt -y update && apt -y dist-upgrade
 RUN         apt -y install build-essential
-RUN         apt -y install nginx supervisor
 
-RUN         pip install --upgrade pip
+# Node.js설치 위한 패키지
+RUN         apt-get -y install curl gnupg
+RUN         curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
-COPY        ./requirements.txt /srv
+ # Nginx, supervisor, Node.js설치
+RUN         apt-get -y install nginx supervisor nodejs
+
+ # Backend 및 Frontend의 패키지들을 미리 install
+COPY        ./requirements.txt              /srv/requirements.txt
+COPY        ./front/package.json            /srv/package.json
+COPY        ./front/package-lock.json       /srv/package-lock.json
+
+# pipenv lock --requirements > requirements.txt 으로 생성
+RUN         pip install -r /srv/requirements.txt
+WORKDIR     /srv/
+RUN         npm install
+
 RUN         pip install -r /srv/requirements.txt
