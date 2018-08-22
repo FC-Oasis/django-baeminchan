@@ -19,7 +19,6 @@ COPY        ./front/package-lock.json       /srv/package-lock.json
 # pipenv lock --requirements > requirements.txt 으로 생성
 WORKDIR     /srv/
 
-RUN         npm i npm@latest -g
 RUN         npm install
 
 RUN         pip install --upgrade pip
