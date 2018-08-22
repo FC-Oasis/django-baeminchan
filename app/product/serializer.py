@@ -55,7 +55,7 @@ class RelatedProductSerializer(serializers.ModelSerializer):
             'price',
             'discount_rate',
             'sale_price',
-            'thumbnail_url',
+            'thumbnail_url1',
         )
 
 
@@ -84,5 +84,5 @@ class ProductSimpleSerializer(ProductSerializer):
             'price',
             'discount_rate',
             'sale_price',
-            'thumbnail_url',
+            'thumbnail_url1',
         )
