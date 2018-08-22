@@ -26,13 +26,15 @@ class Cart(models.Model):
     # 배송비
     @property
     def shipping_fee(self, shipping_fee=2500):
-        if self.total_price >= 40000:
+        if self.total_price >= 40000 or not self.cart_items.exists():
             shipping_fee = 0
         return shipping_fee
 
     # 총주문금액
     @property
     def total_order_price(self):
+        if not self.cart_items.exists():
+            return 0
         total_order_price = self.total_price+self.shipping_fee
         return total_order_price
 
