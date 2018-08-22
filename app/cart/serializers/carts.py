@@ -50,5 +50,8 @@ class CartSerializer(serializers.ModelSerializer):
         fields = (
             'user',
             'cart_items',
+            'total_point',
             'total_price',
+            'shipping_fee',
+            'total_order_price',
         )
