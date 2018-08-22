@@ -3,10 +3,6 @@ from .base import *
 DEBUG = True
 ALLOWED_HOSTS = []
 
-INSTALLED_APPS += [
-    'django_extensions',
-]
-
 WSGI_APPLICATION = 'config.wsgi.local.application'
 
 DATABASES = {
