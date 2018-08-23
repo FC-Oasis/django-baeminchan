@@ -151,91 +151,92 @@ class MembersTest(APITestCase):
             },
         )
 
-    def test_get_phone_auth_key(self):
-        URL = self.URL + 'phone/'
-        response = self.client.post(
-            URL,
-            data={
-                'contact_phone': '01012345678',
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        response = self.client.post(
-            URL,
-            data={
-                'contact_phone': '010-1234-5678',
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        auth_key_prev = response.json()['auth_key']
-        self.assertIsNotNone(auth_key_prev)
-
-        response = self.client.patch(
-            URL,
-            data={
-                'contact_phone': '010-1234-5678',
-            }
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        auth_key = response.json()['auth_key']
-        self.assertIsNotNone(auth_key_prev)
-        self.assertNotEqual(auth_key_prev, auth_key)
-
-    def test_duplicated_phone(self):
-        URL = self.URL + 'phone/'
-
-        response = self.client
-        for __ in range(2):
-            response = self.client.post(
-                URL,
-                data={
-                    'contact_phone': '010-1234-5678',
-                }
-            )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_phone_auth(self):
-        import pprint
-        URL = self.URL + 'phone/'
-        response = self.client.post(
-            URL,
-            data={
-                'contact_phone': '010-1234-5678',
-            }
-        )
-        auth_key = response.json()['auth_key']
-
-        response = self.client.post(
-            URL + 'auth/',
-            data={
-                'contact_phone': '010-1234-5678',
-                'auth_key': '000',
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-        response = self.client.post(
-            URL + 'auth/',
-            data={
-                'contact_phone': '010-1234-5678',
-                'auth_key': auth_key,
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        response = self.client.post(
-            URL + 'auth/',
-            data={
-                'contact_phone': '010-1234-5678',
-                'auth_key': auth_key,
-            }
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
+    # # Phone 관련 테스트 사용시 실제 청기와랩 API 호출됨
+    # # 필요할 때만 주석 해제해서 사용할 것
+    # def test_get_phone_auth_key(self):
+    #     URL = self.URL + 'phone/'
+    #     response = self.client.post(
+    #         URL,
+    #         data={
+    #             'contact_phone': '01012345678',
+    #         }
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #
+    #     response = self.client.post(
+    #         URL,
+    #         data={
+    #             'contact_phone': '010-1234-5678',
+    #         }
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #
+    #     auth_key_prev = response.json()['auth_key']
+    #     self.assertIsNotNone(auth_key_prev)
+    #
+    #     response = self.client.patch(
+    #         URL,
+    #         data={
+    #             'contact_phone': '010-1234-5678',
+    #         }
+    #     )
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #
+    #     auth_key = response.json()['auth_key']
+    #     self.assertIsNotNone(auth_key_prev)
+    #     self.assertNotEqual(auth_key_prev, auth_key)
+    #
+    # def test_duplicated_phone(self):
+    #     URL = self.URL + 'phone/'
+    #
+    #     response = self.client
+    #     for __ in range(2):
+    #         response = self.client.post(
+    #             URL,
+    #             data={
+    #                 'contact_phone': '010-1234-5678',
+    #             }
+    #         )
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #
+    # def test_phone_auth(self):
+    #     import pprint
+    #     URL = self.URL + 'phone/'
+    #     response = self.client.post(
+    #         URL,
+    #         data={
+    #             'contact_phone': '010-1234-5678',
+    #         }
+    #     )
+    #     auth_key = response.json()['auth_key']
+    #
+    #     response = self.client.post(
+    #         URL + 'auth/',
+    #         data={
+    #             'contact_phone': '010-1234-5678',
+    #             'auth_key': '000',
+    #         }
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    #
+    #     response = self.client.post(
+    #         URL + 'auth/',
+    #         data={
+    #             'contact_phone': '010-1234-5678',
+    #             'auth_key': auth_key,
+    #         }
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #
+    #     response = self.client.post(
+    #         URL + 'auth/',
+    #         data={
+    #             'contact_phone': '010-1234-5678',
+    #             'auth_key': auth_key,
+    #         }
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_duplicate_email_validation(self):
         """
