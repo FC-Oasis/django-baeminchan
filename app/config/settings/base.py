@@ -40,6 +40,7 @@ AUTHENTICATION_BACKENDS = [
 # CORS
 CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
+    'bmc.yeojin.me'
 )
 
 
