@@ -10,6 +10,17 @@ from members.models import Phone
 User = get_user_model()
 
 
+class UserSimpleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'username',
+            'fullname',
+        )
+
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
