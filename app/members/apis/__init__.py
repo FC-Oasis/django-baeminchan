@@ -13,6 +13,7 @@ from rest_framework.views import APIView
 from members.models import Phone
 from ..serializers import UserSerializer, PasswordChangeSerializer, EmailChangeSerializer, ContactPhoneChangeSerializer, \
     PhoneSerializer, PhoneAuthSerializer
+from ..tasks import send_sms
 
 
 User = get_user_model()
@@ -147,7 +148,7 @@ class PhoneCreate(generics.CreateAPIView, mixins.UpdateModelMixin):
         request.data['auth_key'] = auth_key
         request.data._mutable = mutable
         response = super(PhoneCreate, self).create(request, *args, **kwargs)
-        PhoneCreate.send_sms(contact_phone, auth_key)
+        send_sms.delay(contact_phone, auth_key)
         return response
 
     def patch(self, request, *args, **kwargs):
@@ -158,35 +159,8 @@ class PhoneCreate(generics.CreateAPIView, mixins.UpdateModelMixin):
         request.POST['auth_key'] = auth_key
         request.POST._mutable = mutable
         response = self.update(request, *args, **kwargs)
-        PhoneCreate.send_sms(contact_phone, auth_key)
+        send_sms.delay(contact_phone, auth_key)
         return response
-
-    @staticmethod
-    def send_sms(contact_phone, auth_key):
-        import requests
-        from config.settings.production import secrets
-
-        BLUEHOUSELAB_SMS_API_ID = secrets['BLUEHOUSELAB_SMS_API_ID']
-        BLUEHOUSELAB_SMS_API_KEY = secrets['BLUEHOUSELAB_SMS_API_KEY']
-        BLUEHOUSELAB_SENDER = secrets['BLUEHOUSELAB_SENDER']
-        receiver = contact_phone.replace('-', '')
-        content = f'[배민찬COPY] 인증번호는 {auth_key}입니다.'
-
-        requests.post(
-            'https://api.bluehouselab.com/smscenter/v1.0/sendsms',
-            auth=requests.auth.HTTPBasicAuth(
-                BLUEHOUSELAB_SMS_API_ID,
-                BLUEHOUSELAB_SMS_API_KEY,
-            ),
-            headers={
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-            json={
-                'sender': BLUEHOUSELAB_SENDER,
-                'receivers': [receiver],
-                'content': content,
-            }
-        )
 
 
 class PhoneAuth(APIView):

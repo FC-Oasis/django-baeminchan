@@ -148,3 +148,6 @@ RAVEN_CONFIG = {
     # release based on the git info.
     # 'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
+
+CELERY_BROKER_URL = 'redis://' + secrets['AWS_ELASTI_CACHE']
+CELERY_RESULT_BACKEND = 'redis://' + secrets['AWS_ELASTI_CACHE']
