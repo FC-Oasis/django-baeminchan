@@ -11,18 +11,21 @@ django-storages = "*"
 "boto3" = "*"
 uwsgi = "*"
 djangorestframework = "*"
-requests = "*"
 raven = "*"
 django-cors-headers = "*"
+celery = "*"
+requests = "==2.18.4"
 
 [dev-packages]
 ipython = "*"
 django-extensions = "*"
-awsebcli = "*"
 pygraphviz = "*"
 "beautifulsoup4" = "*"
 lxml = "*"
 django-debug-toolbar = "*"
+redis = "*"
+awsebcli = "*"
+"urllib3" = "==1.22"
 
 [requires]
 python_version = "3.6"
