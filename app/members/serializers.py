@@ -1,6 +1,8 @@
 import re
 
 from django.contrib.auth import get_user_model
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -50,6 +52,17 @@ class UserSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
+
+        message = render_to_string('users/welcome_email.html', {
+            'user': user,
+        })
+
+        mail_subject = '배민찬 가입을 환영합니다.'
+        to_email = user.email
+
+        email = EmailMessage(mail_subject, message, to=[to_email])
+        email.send()
+
         return user
 
 
