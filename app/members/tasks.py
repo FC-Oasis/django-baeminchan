@@ -1,3 +1,6 @@
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+
 from config.celery import app
 
 
@@ -31,3 +34,16 @@ def send_sms(contact_phone, auth_key):
             'content': content,
         }
     )
+
+
+@app.task()
+def send_email(template, user, mail_subject):
+    message = render_to_string(
+        template,
+        {
+            'user': user,
+        },
+    )
+    to_email = user.email
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    email.send()
