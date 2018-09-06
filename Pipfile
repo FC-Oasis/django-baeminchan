@@ -15,6 +15,7 @@ raven = "*"
 django-cors-headers = "*"
 celery = "*"
 requests = "==2.18.4"
+redis = "*"
 
 [dev-packages]
 ipython = "*"
