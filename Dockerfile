@@ -25,7 +25,6 @@ EXPOSE      7000
 
 # Front-end
 WORKDIR     /srv/front
-RUN         npm run build
 
 # Nginx설치와 동시에 실행되던 nginx daemon종료 후
 # supervisor를 사용해 Nginx, Django, Front를 실행
