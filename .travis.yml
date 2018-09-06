@@ -6,7 +6,7 @@ services:
 addons:
   postgresql: '9.4'
 before_install:
-- openssl aes-256-cbc -K $encrypted_71c7105b901d_key -iv $encrypted_71c7105b901d_iv
+- openssl aes-256-cbc -K $encrypted_c310a5f9fe5d_key -iv $encrypted_c310a5f9fe5d_iv
   -in secrets.tar.enc -out secrets.tar -d
 - tar xvf secrets.tar
 - tar xvf front.tar
