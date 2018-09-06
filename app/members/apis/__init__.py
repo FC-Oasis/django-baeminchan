@@ -1,7 +1,9 @@
 from random import randint
 
 from django.contrib.auth import get_user_model
+from django.core.mail import EmailMessage
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.utils import timezone
 from rest_framework import generics, permissions, status, mixins, serializers
 from rest_framework.authtoken.models import Token
@@ -38,6 +40,18 @@ class UserDetail(mixins.DestroyModelMixin,
     serializer_class = UserSerializer
 
     def delete(self, request, *args, **kwargs):
+        user = request.user
+        if request.user.is_authenticated:
+            message = render_to_string('users/goodbye_email.html',
+               {
+                   'user': user,
+               })
+
+            mail_subject = '정상적으로 탈퇴가 완료 되었습니다.'
+            to_email = user.email
+            email = EmailMessage(mail_subject, message, to=[to_email])
+            email.send()
+
         return self.destroy(request, *args, **kwargs)
 
 

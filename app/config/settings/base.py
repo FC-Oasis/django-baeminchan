@@ -24,6 +24,8 @@ SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
 secrets = json.load(open(os.path.join(SECRET_DIR, 'base.json'), 'rb'))
 SECRET_KEY = secrets['SECRET_KEY']
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
 # Static
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
@@ -42,6 +44,15 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:4200',
     'bmc.yeojin.me'
 )
+
+EMAIL_BACKEND = secrets['EMAIL_BACKEND']
+EMAIL_USE_TLS = secrets['EMAIL_USE_TLS']
+EMAIL_PORT = secrets['EMAIL_PORT']
+EMAIL_HOST = secrets['EMAIL_HOST']
+EMAIL_HOST_USER = secrets['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = secrets['EMAIL_HOST_PASSWORD']
+SERVER_EMAIL = secrets['SERVER_EMAIL']
+DEFAULT_FROM_MAIL = secrets['DEFAULT_FROM_MAIL']
 
 
 # DRF
@@ -86,7 +97,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATES_DIR,
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
